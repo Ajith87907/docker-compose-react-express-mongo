@@ -1,49 +1,42 @@
 services:
   frontend:
-    build:
-      context: ./client
-      dockerfile: ./Dockerfile
-    image: "node-frontend"
+    build: frontend
     ports:
       - 3000:3000
     stdin_open: true
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
     container_name: frontend
     restart: always
     networks:
-      - react-express2
+      - react-express
     depends_on:
       - backend
-
   backend:
-    image: "node-backend"
     container_name: backend
     restart: always
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
+    build: backend
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - mongodb
+      - mongo
     networks:
-      - express-mongo2
-      - react-express2
+      - express-mongo
+      - react-express
     expose: 
-      - 5000
-  mongodb:
+      - 3000
+  mongo:
     container_name: mongo
     restart: always
     image: mongo:4.2.0
     volumes:
       - ./data:/data/db
     networks:
-      - express-mongo2
+      - express-mongo
     expose:
       - 27017
 networks:
-  react-express2:
-  express-mongo2:
+  react-express:
+  express-mongo:
